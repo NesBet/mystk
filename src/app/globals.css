@@ -1,0 +1,320 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-th-bg: var(--background);
+  --color-th-card: var(--card-bg);
+  --color-th-card-soft: var(--card-bg-soft);
+  --color-th-border: var(--card-border);
+  --color-th-border-strong: var(--card-border-strong);
+  --color-th-input: var(--input-bg);
+  --color-th-input-border: var(--input-border);
+  --color-th-primary: var(--primary);
+  --color-th-primary-hover: var(--primary-hover);
+  --color-th-primary-contrast: var(--primary-contrast);
+  --color-th-primary-soft: var(--primary-soft);
+  --color-th-accent: var(--accent);
+  --color-th-success: var(--success);
+  --color-th-success-soft: var(--success-soft);
+  --color-th-error: var(--error);
+  --color-th-error-soft: var(--error-soft);
+  --color-th-warning: var(--warning);
+  --color-th-warning-soft: var(--warning-soft);
+  --color-th-text: var(--text-primary);
+  --color-th-muted: var(--text-muted);
+  --color-th-secondary: var(--text-secondary);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  color-scheme: light;
+  --background: #f5f4f0;
+  --foreground: #171a18;
+  --card-bg: #ffffff;
+  --card-bg-soft: #f8f7f3;
+  --card-border: #e7e5de;
+  --card-border-strong: #d8d5cc;
+  --input-bg: #f6f5f1;
+  --input-border: #e3e0d8;
+  --primary: #0f6b5c;
+  --primary-hover: #0b5548;
+  --primary-contrast: #ffffff;
+  --primary-soft: #e6f2ee;
+  --accent: #0f6b5c;
+  --success: #16794c;
+  --success-soft: #e5f3eb;
+  --error: #b43a3a;
+  --error-soft: #fbeaea;
+  --warning: #a16207;
+  --warning-soft: #fbf1dd;
+  --text-primary: #171a18;
+  --text-secondary: #4c524e;
+  --text-muted: #7a817c;
+  --ring: rgba(15, 107, 92, 0.22);
+  --grid-dot: rgba(23, 26, 24, 0.12);
+  --ambient-a: rgba(15, 107, 92, 0.1);
+  --ambient-b: rgba(186, 154, 74, 0.12);
+  --panel-shadow: 0 1px 2px rgba(23, 26, 24, 0.04), 0 28px 70px -36px rgba(23, 26, 24, 0.24);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #0b0e0d;
+  --foreground: #f1f3f1;
+  --card-bg: #121615;
+  --card-bg-soft: #171c1a;
+  --card-border: #242a27;
+  --card-border-strong: #333b37;
+  --input-bg: #171c1a;
+  --input-border: #2a312e;
+  --primary: #34d3b6;
+  --primary-hover: #5ee0c8;
+  --primary-contrast: #062e27;
+  --primary-soft: #12342d;
+  --accent: #34d3b6;
+  --success: #4ade80;
+  --success-soft: #123024;
+  --error: #f87171;
+  --error-soft: #3a1b1b;
+  --warning: #fbbf24;
+  --warning-soft: #372a12;
+  --text-primary: #f1f3f1;
+  --text-secondary: #c3cac6;
+  --text-muted: #8b948f;
+  --ring: rgba(52, 211, 182, 0.24);
+  --grid-dot: rgba(241, 243, 241, 0.08);
+  --ambient-a: rgba(52, 211, 182, 0.08);
+  --ambient-b: rgba(186, 154, 74, 0.06);
+  --panel-shadow: 0 1px 0 rgba(255, 255, 255, 0.02), 0 32px 80px -40px rgba(0, 0, 0, 0.85);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--background);
+    background-image:
+      radial-gradient(900px 480px at 12% -8%, var(--ambient-a), transparent 65%),
+      radial-gradient(760px 420px at 96% -4%, var(--ambient-b), transparent 62%);
+    background-attachment: fixed;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    letter-spacing: -0.011em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+    background-size: 26px 26px;
+    mask-image: linear-gradient(to bottom, black, transparent 58%);
+    opacity: 0.62;
+  }
+
+  ::selection {
+    background: var(--primary);
+    color: var(--primary-contrast);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+@layer components {
+  .panel {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 1.5rem;
+    box-shadow: var(--panel-shadow);
+  }
+
+  .panel-soft {
+    background: var(--card-bg-soft);
+    border: 1px solid var(--card-border);
+    border-radius: 1.25rem;
+  }
+
+  .eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.875rem;
+    background: var(--primary);
+    color: var(--primary-contrast);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 14px 28px -16px var(--primary);
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0) scale(0.995);
+  }
+
+  .btn-primary:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.875rem;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .btn-secondary:hover {
+    background: var(--input-bg);
+    border-color: var(--card-border-strong);
+    color: var(--text-primary);
+  }
+
+  .field-shell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.875rem;
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+    padding: 0 0.875rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  }
+
+  .field-shell:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--ring);
+    background: var(--card-bg);
+  }
+
+  .field-shell[data-invalid="true"] {
+    border-color: var(--error);
+  }
+
+  .field-shell[data-invalid="true"]:focus-within {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--error) 18%, transparent);
+  }
+
+  .scroll-slim {
+    scrollbar-width: thin;
+    scrollbar-color: var(--card-border-strong) transparent;
+  }
+
+  .scroll-slim::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scroll-slim::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scroll-slim::-webkit-scrollbar-thumb {
+    background: var(--card-border-strong);
+    border-radius: 999px;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+@keyframes ping-soft {
+  0% { transform: scale(1); opacity: 0.5; }
+  75%, 100% { transform: scale(1.45); opacity: 0; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-rise {
+  animation: rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-shake {
+  animation: shake 0.45s ease-in-out;
+}
+
+.animate-ping-soft {
+  animation: ping-soft 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.animate-spin {
+  animation: spin 0.9s linear infinite;
+}
+
+.stagger-1 { animation-delay: 0.04s; }
+.stagger-2 { animation-delay: 0.08s; }
+.stagger-3 { animation-delay: 0.12s; }
+.stagger-4 { animation-delay: 0.16s; }
+.stagger-5 { animation-delay: 0.2s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
