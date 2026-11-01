@@ -1,10 +1,4 @@
 node_modules/
 .next/
 .env*
-.dev.vars
-.dev.vars.*
-!.dev.vars.example
-.open-next/
-.wrangler/
-worker-configuration.d.ts
 .opencode
