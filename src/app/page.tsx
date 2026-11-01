@@ -384,7 +384,15 @@ export default function Home() {
   }
 
   const payWithCard = async () => {
-    const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY
+    let publicKey: string | null = null
+    try {
+      const configRes = await fetch('/api/config', { cache: 'no-store' })
+      if (configRes.ok) {
+        const config = await configRes.json()
+        publicKey = typeof config.publicKey === 'string' ? config.publicKey : null
+      }
+    } catch {}
+
     if (!publicKey) {
       setPayment({ status: 'failed', reference: null, message: 'Card payments are not configured yet. Choose M-Pesa or Airtel Money.', displayText: null, accountNumber: null, accountReference: null })
       return

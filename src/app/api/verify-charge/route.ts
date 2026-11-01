@@ -1,9 +1,10 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { checkPendingCharge } from '@/lib/paystack'
+import { getEnv } from '@/lib/env'
 
 export async function POST(req: NextRequest) {
   try {
-    const secret = process.env.PAYSTACK_SECRET_KEY
+    const secret = getEnv().PAYSTACK_SECRET_KEY
     if (!secret) {
       return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
     }

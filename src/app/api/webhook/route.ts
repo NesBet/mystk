@@ -1,27 +1,48 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { getTransaction, insertTransaction, updateTransactionStatus } from '@/lib/db'
+import { getEnv } from '@/lib/env'
+
+async function hmacSha512Hex(secret: string, body: string): Promise<string> {
+  const key = await crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(secret),
+    { name: 'HMAC', hash: 'SHA-512' },
+    false,
+    ['sign'],
+  )
+  const signature = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(body))
+  return Array.from(new Uint8Array(signature), byte => byte.toString(16).padStart(2, '0')).join('')
+}
+
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false
+  let diff = 0
+  for (let i = 0; i < a.length; i += 1) {
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i)
+  }
+  return diff === 0
+}
 
 export async function POST(req: NextRequest) {
   try {
-    const payload = await req.json()
+    const rawBody = await req.text()
+    const payload = JSON.parse(rawBody)
 
-    const secret = process.env.PAYSTACK_WEBHOOK_SECRET
+    const env = getEnv()
+    const secret = env.PAYSTACK_WEBHOOK_SECRET || env.PAYSTACK_SECRET_KEY
     const signature = req.headers.get('x-paystack-signature')
 
-    if (secret) {
-      if (!signature) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-      }
+    if (!secret) {
+      return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
+    }
 
-      const crypto = await import('crypto')
-      const hash = crypto
-        .createHmac('sha512', secret)
-        .update(JSON.stringify(payload))
-        .digest('hex')
+    if (!signature) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
-      if (hash !== signature) {
-        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
-      }
+    const hash = await hmacSha512Hex(secret, rawBody)
+    if (!timingSafeEqual(hash, signature)) {
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
 
     const event = payload.event
@@ -30,13 +51,13 @@ export async function POST(req: NextRequest) {
     switch (event) {
       case 'charge.success': {
         console.log('Charge successful:', data.reference, data.amount, data.email)
-        const updated = updateTransactionStatus(data.reference, 'paid', 'Webhook confirmation')
-        if (!updated && data.reference && !getTransaction(data.reference)) {
+        const updated = await updateTransactionStatus(data.reference, 'paid', 'Webhook confirmation')
+        if (!updated && data.reference && !(await getTransaction(data.reference))) {
           const metadata = data.metadata || {}
           const customerName =
             [metadata.first_name, metadata.last_name].filter(Boolean).join(' ') ||
             [data.customer?.first_name, data.customer?.last_name].filter(Boolean).join(' ')
-          insertTransaction({
+          await insertTransaction({
             reference: data.reference,
             phone: metadata.phone || data.customer?.phone || 'N/A',
             amount: Number(data.amount) / 100,
@@ -53,7 +74,7 @@ export async function POST(req: NextRequest) {
       }
       case 'charge.failed':
         console.log('Charge failed:', data.reference, data.amount, data.email)
-        updateTransactionStatus(data.reference, 'failed', data.message || 'Webhook failure notification')
+        await updateTransactionStatus(data.reference, 'failed', data.message || 'Webhook failure notification')
         break
       default:
         console.log('Unhandled event:', event)

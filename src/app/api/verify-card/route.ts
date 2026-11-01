@@ -1,10 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { verifyTransaction } from '@/lib/paystack'
 import { getTransaction, insertTransaction, updateTransactionStatus } from '@/lib/db'
+import { getEnv } from '@/lib/env'
 
 export async function POST(req: NextRequest) {
   try {
-    const secret = process.env.PAYSTACK_SECRET_KEY
+    const secret = getEnv().PAYSTACK_SECRET_KEY
     if (!secret) {
       return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
     }
@@ -36,11 +37,11 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const existing = getTransaction(reference)
+    const existing = await getTransaction(reference)
     if (existing) {
-      updateTransactionStatus(reference, 'paid', 'Card payment verified')
+      await updateTransactionStatus(reference, 'paid', 'Card payment verified')
     } else {
-      insertTransaction({
+      await insertTransaction({
         reference,
         phone: body.phone || 'N/A',
         amount: Number(data.amount) / 100,

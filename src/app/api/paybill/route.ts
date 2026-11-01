@@ -14,12 +14,12 @@ export async function GET(req: NextRequest) {
     const status = searchParams.get('status')
 
     if (reference) {
-      const tx = getTransaction(reference)
+      const tx = await getTransaction(reference)
       if (!tx) return NextResponse.json({ error: 'Transaction not found' }, { status: 404 })
       return NextResponse.json({ status: true, data: tx })
     }
 
-    const transactions = status ? getAllTransactions(status) : getAllTransactions()
+    const transactions = await getAllTransactions(status ?? undefined)
     return NextResponse.json({ status: true, data: transactions })
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Internal server error'
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     const action = body.action
 
     if (action === 'record') {
-      const tx = insertTransaction({
+      const tx = await insertTransaction({
         reference: body.reference,
         phone: body.phone,
         amount: body.amount,
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 
     if (action === 'confirm') {
       if (!body.reference) return NextResponse.json({ status: false, error: 'Reference is required' }, { status: 400 })
-      const tx = confirmPayment(body.reference)
+      const tx = await confirmPayment(body.reference)
       if (!tx) return NextResponse.json({ status: false, error: 'Transaction not found' }, { status: 404 })
       return NextResponse.json({ status: true, data: tx })
     }
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
       if (!['paid', 'failed'].includes(body.status)) {
         return NextResponse.json({ status: false, error: 'Status must be "paid" or "failed"' }, { status: 400 })
       }
-      const tx = updateTransactionStatus(body.reference, body.status, body.notes || undefined)
+      const tx = await updateTransactionStatus(body.reference, body.status, body.notes || undefined)
       if (!tx) return NextResponse.json({ status: false, error: 'Transaction not found' }, { status: 404 })
       return NextResponse.json({ status: true, data: tx })
     }
