@@ -1,4 +1,0 @@
-NEXTJS_ENV=development
-NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=pk_test_xxxxxxxxxxxxxxxxx
-PAYSTACK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxx
-PAYSTACK_WEBHOOK_SECRET=sk_test_xxxxxxxxxxxxxxxxx
