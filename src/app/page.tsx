@@ -660,7 +660,7 @@ export default function Home() {
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
           <button onClick={() => setView('payment')} className="group flex items-center gap-3 rounded-xl text-left">
             <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl border border-th-border bg-th-card shadow-sm">
-              <img src="/favicon.jpg" alt="" className="h-full w-full object-cover" />
+              <img src="/favicon.png" alt="" className="h-full w-full object-cover" />
             </span>
             <span className="hidden flex-col sm:flex">
               <span className="text-sm font-semibold tracking-[-0.02em] text-th-text">STK Pay</span>

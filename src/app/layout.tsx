@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: "STK Pay — Secure checkout",
   description:
     "Pay securely with M-Pesa, Airtel Money, or card. Real-time confirmation, every transaction encrypted.",
-  icons: "/favicon.jpg",
+  icons: "/favicon.png",
 };
 
 export const viewport: Viewport = {
