@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
-  "name": "stk-pay",
+  "name": "mystk",
   "compatibility_date": "2025-04-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
@@ -17,9 +17,9 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "stk-pay-db",
+      "database_name": "mystk-db",
       // Replace this with the database_id printed by `npx wrangler d1 create stk-pay-db`.
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "a16a2e53-b257-425c-b997-b07452fc9f41",
       "migrations_dir": "migrations"
     }
   ],
