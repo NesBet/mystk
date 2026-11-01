@@ -11,7 +11,7 @@
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "stk-pay"
+      "service": "mystk"
     }
   ],
   "d1_databases": [
