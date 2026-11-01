@@ -1,4 +1,4 @@
-'use client' //paystack
+'use client'
 
 import { useState, useCallback, useRef, useEffect, type ReactNode } from 'react'
 import ThemeToggle from '@/components/ThemeToggle'
